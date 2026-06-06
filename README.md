@@ -3,9 +3,14 @@
 > Mini-CRM para **gerenciar clientes e atendimentos** — cadastro, busca, status e histórico de contatos. Feito com **Laravel 12 + Livewire 3**.
 
 [![CI](https://github.com/ReneMartins1983/Clientela/actions/workflows/ci.yml/badge.svg)](https://github.com/ReneMartins1983/Clientela/actions/workflows/ci.yml)
+[![Demo](https://img.shields.io/badge/demo-online-success)](https://clientela.onrender.com)
 ![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
 ![Livewire](https://img.shields.io/badge/Livewire-3-FB70A9?logo=livewire&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)
+
+🌐 **Demo ao vivo:** **<https://clientela.onrender.com>** — entre com **demo@clientela.app** / **password**
+
+> Plano gratuito do Render: o primeiro acesso após inatividade pode levar ~30–50s para "acordar".
 
 Aplicação web onde cada usuário cria uma conta e gerencia sua **carteira de clientes**:
 cadastra clientes (com status lead/ativo/inativo), registra **atendimentos/follow-ups**
