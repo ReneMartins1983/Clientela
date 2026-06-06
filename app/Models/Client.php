@@ -33,4 +33,9 @@ class Client extends Model
     {
         return $this->hasMany(Interaction::class)->latest('happened_at');
     }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(Attachment::class)->latest();
+    }
 }

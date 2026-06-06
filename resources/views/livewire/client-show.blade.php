@@ -27,6 +27,38 @@
             @endif
         </div>
 
+        {{-- Anexos --}}
+        <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Anexos</h2>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <input type="file" wire:model="upload"
+                       class="block text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100 dark:text-gray-300">
+                <button type="button" wire:click="saveUpload" wire:loading.attr="disabled"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50">
+                    <span wire:loading.remove wire:target="upload,saveUpload">Enviar</span>
+                    <span wire:loading wire:target="upload,saveUpload">Enviando...</span>
+                </button>
+                <span class="text-xs text-gray-400">Até 4&nbsp;MB</span>
+            </div>
+            @error('upload') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+
+            @if ($attachments->isNotEmpty())
+                <ul class="mt-4 divide-y divide-gray-100 dark:divide-gray-700">
+                    @foreach ($attachments as $attachment)
+                        <li class="flex items-center justify-between py-2 text-sm">
+                            <span class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                📎 <a href="{{ route('attachments.download', $attachment) }}" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ $attachment->name }}</a>
+                                <span class="text-xs text-gray-400">({{ $attachment->humanSize() }})</span>
+                            </span>
+                            <button wire:click="deleteAttachment({{ $attachment->id }})" wire:confirm="Remover este anexo?"
+                                    class="text-xs text-gray-400 hover:text-red-600">Excluir</button>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
         {{-- Novo atendimento --}}
         <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Registrar atendimento</h2>

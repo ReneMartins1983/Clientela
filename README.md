@@ -18,15 +18,21 @@ e acompanha o histórico — útil para freelancers e pequenos negócios.
 
 ## 📸 Telas
 
-| Lista de clientes | Cliente + atendimentos |
+| Lista de clientes | Cliente + atendimentos + anexos |
 | --- | --- |
 | ![Clientes](docs/screenshots/clients.png) | ![Detalhe do cliente](docs/screenshots/client-show.png) |
+
+**Funil (pipeline) com arrastar-e-soltar:**
+
+![Funil](docs/screenshots/funil.png)
 
 ## ✨ Funcionalidades
 
 - 🔐 **Contas de usuário** (Breeze) — cada um vê apenas os seus clientes.
 - 👤 **CRUD de clientes** com **busca** e **filtro por status** (lead/ativo/inativo).
+- 📊 **Funil (pipeline)** estilo kanban — **arraste** os clientes entre as etapas.
 - 🗂️ **Atendimentos por cliente** (ligação, e-mail, reunião, WhatsApp, anotação) com histórico.
+- 📎 **Anexos por cliente** (upload de arquivos, download protegido por posse).
 - ⚡ Interface reativa com **Livewire** (sem recarregar a página, sem escrever API/JS).
 - 🌙 Modo escuro · 🧪 testes · CI.
 
