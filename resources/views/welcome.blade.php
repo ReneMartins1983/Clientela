@@ -18,15 +18,15 @@
     {{-- Top bar --}}
     <header class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
         <div class="flex items-center gap-2 text-lg font-bold">
-            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white">C</span>
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white">C</span>
             Clientela
         </div>
         <nav class="flex items-center gap-2 text-sm font-medium">
             @auth
-                <a href="{{ route('clients.index') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Meus clientes</a>
+                <a href="{{ route('clients.index') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700">Meus clientes</a>
             @else
                 <a href="{{ route('login') }}" class="rounded-md px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Entrar</a>
-                <a href="{{ route('register') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Criar conta</a>
+                <a href="{{ route('register') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700">Criar conta</a>
             @endauth
         </nav>
     </header>
@@ -35,14 +35,14 @@
     <main class="mx-auto max-w-5xl px-6">
         <section class="py-16 text-center sm:py-24">
             <h1 class="mx-auto max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl">
-                Organize seus clientes e <span class="text-indigo-600 dark:text-indigo-400">atendimentos</span>
+                Organize seus clientes e <span class="text-emerald-600 dark:text-emerald-400">atendimentos</span>
             </h1>
             <p class="mx-auto mt-5 max-w-xl text-lg text-gray-600 dark:text-gray-400">
                 Um CRM simples e direto: cadastre clientes, acompanhe o status e registre cada
                 contato (ligação, e-mail, reunião) em um histórico organizado.
             </p>
             <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <a href="{{ route('register') }}" class="rounded-lg bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-700">
+                <a href="{{ route('register') }}" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-emerald-700">
                     Criar conta grátis
                 </a>
                 <a href="{{ route('login') }}" class="rounded-lg border border-gray-300 px-6 py-3 text-base font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">

@@ -21,8 +21,18 @@ class Client extends Model
     ];
 
     protected $fillable = [
-        'user_id', 'name', 'email', 'phone', 'company', 'status', 'notes',
+        'user_id', 'name', 'email', 'phone', 'company', 'status', 'notes', 'next_followup_at',
     ];
+
+    protected $casts = [
+        'next_followup_at' => 'datetime',
+    ];
+
+    /** Tem follow-up agendado e já venceu? */
+    public function isFollowupOverdue(): bool
+    {
+        return $this->next_followup_at !== null && $this->next_followup_at->isPast();
+    }
 
     public function user(): BelongsTo
     {

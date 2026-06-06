@@ -24,11 +24,28 @@ class ClientShow extends Component
 
     public $upload;
 
+    public string $followup_at = '';
+
     public function mount(Client $client): void
     {
         abort_unless($client->user_id === auth()->id(), 403);
         $this->client = $client;
         $this->happened_at = now()->format('Y-m-d\TH:i');
+        $this->followup_at = $client->next_followup_at?->format('Y-m-d\TH:i') ?? '';
+    }
+
+    public function saveFollowup(): void
+    {
+        $this->validate(['followup_at' => ['nullable', 'date']]);
+        $this->client->update(['next_followup_at' => $this->followup_at ?: null]);
+        $this->client->refresh();
+    }
+
+    public function clearFollowup(): void
+    {
+        $this->client->update(['next_followup_at' => null]);
+        $this->client->refresh();
+        $this->followup_at = '';
     }
 
     protected function rules(): array

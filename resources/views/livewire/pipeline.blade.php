@@ -46,9 +46,14 @@
                         @foreach (($groups[$status] ?? []) as $client)
                             <div data-id="{{ $client->id }}" wire:key="card-{{ $client->id }}"
                                  class="cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800">
-                                <a href="{{ route('clients.show', $client) }}" class="font-medium text-gray-900 hover:text-indigo-600 dark:text-gray-100">{{ $client->name }}</a>
+                                <a href="{{ route('clients.show', $client) }}" class="font-medium text-gray-900 hover:text-emerald-600 dark:text-gray-100">{{ $client->name }}</a>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">{{ $client->company ?: '—' }}</div>
-                                <div class="mt-1 text-xs text-gray-400">{{ $client->interactions_count }} atendimento(s)</div>
+                                <div class="mt-1 flex items-center gap-2 text-xs text-gray-400">
+                                    <span>{{ $client->interactions_count }} atendimento(s)</span>
+                                    @if ($client->isFollowupOverdue())
+                                        <span class="rounded-full bg-red-100 px-1.5 py-0.5 font-medium text-red-700 dark:bg-red-900/40 dark:text-red-300">vencido</span>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>

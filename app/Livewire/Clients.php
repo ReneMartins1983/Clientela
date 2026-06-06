@@ -22,6 +22,9 @@ class Clients extends Component
     #[Url]
     public string $statusFilter = '';
 
+    #[Url]
+    public bool $overdueOnly = false;
+
     // formulário (modal)
     public bool $showForm = false;
     public ?int $editingId = null;
@@ -31,6 +34,7 @@ class Clients extends Component
     public string $company = '';
     public string $status = 'lead';
     public string $notes = '';
+    public string $next_followup_at = '';
 
     protected function rules(): array
     {
@@ -41,6 +45,7 @@ class Clients extends Component
             'company' => ['nullable', 'string', 'max:120'],
             'status' => ['required', 'in:lead,active,inactive'],
             'notes' => ['nullable', 'string', 'max:2000'],
+            'next_followup_at' => ['nullable', 'date'],
         ];
     }
 
@@ -54,9 +59,14 @@ class Clients extends Component
         $this->resetPage();
     }
 
+    public function updatedOverdueOnly(): void
+    {
+        $this->resetPage();
+    }
+
     public function create(): void
     {
-        $this->reset(['editingId', 'name', 'email', 'phone', 'company', 'notes']);
+        $this->reset(['editingId', 'name', 'email', 'phone', 'company', 'notes', 'next_followup_at']);
         $this->status = 'lead';
         $this->resetValidation();
         $this->showForm = true;
@@ -72,6 +82,7 @@ class Clients extends Component
         $this->company = (string) $client->company;
         $this->status = $client->status;
         $this->notes = (string) $client->notes;
+        $this->next_followup_at = $client->next_followup_at?->format('Y-m-d\TH:i') ?? '';
         $this->resetValidation();
         $this->showForm = true;
     }
@@ -79,6 +90,7 @@ class Clients extends Component
     public function save(): void
     {
         $data = $this->validate();
+        $data['next_followup_at'] = $this->next_followup_at ?: null;
 
         if ($this->editingId) {
             $client = Client::findOrFail($this->editingId);
@@ -112,6 +124,7 @@ class Clients extends Component
                     ->orWhere('email', 'like', "%{$this->search}%");
             }))
             ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
+            ->when($this->overdueOnly, fn ($q) => $q->whereNotNull('next_followup_at')->where('next_followup_at', '<', now()))
             ->withCount('interactions')
             ->latest()
             ->paginate(10);

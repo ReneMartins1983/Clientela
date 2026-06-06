@@ -18,7 +18,11 @@ e acompanha o histórico — útil para freelancers e pequenos negócios.
 
 ## 📸 Telas
 
-| Lista de clientes | Cliente + atendimentos + anexos |
+**Painel** (métricas + follow-ups vencidos):
+
+![Painel](docs/screenshots/painel.png)
+
+| Lista de clientes | Cliente + follow-up + anexos |
 | --- | --- |
 | ![Clientes](docs/screenshots/clients.png) | ![Detalhe do cliente](docs/screenshots/client-show.png) |
 
@@ -29,8 +33,10 @@ e acompanha o histórico — útil para freelancers e pequenos negócios.
 ## ✨ Funcionalidades
 
 - 🔐 **Contas de usuário** (Breeze) — cada um vê apenas os seus clientes.
+- 📈 **Painel** com indicadores por etapa e **alertas de follow-ups vencidos**.
 - 👤 **CRUD de clientes** com **busca** e **filtro por status** (lead/ativo/inativo).
 - 📊 **Funil (pipeline)** estilo kanban — **arraste** os clientes entre as etapas.
+- ⏰ **Follow-up agendado** por cliente, com destaque de pendências vencidas.
 - 🗂️ **Atendimentos por cliente** (ligação, e-mail, reunião, WhatsApp, anotação) com histórico.
 - 📎 **Anexos por cliente** (upload de arquivos, download protegido por posse).
 - ⚡ Interface reativa com **Livewire** (sem recarregar a página, sem escrever API/JS).

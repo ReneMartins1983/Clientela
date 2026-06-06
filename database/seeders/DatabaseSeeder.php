@@ -36,8 +36,14 @@ class DatabaseSeeder extends Seeder
             ['type' => 'email', 'notes' => 'Follow-up: aguardando retorno sobre o contrato.'],
         ];
 
+        // alguns follow-ups: vencidos e próximos (para o painel)
+        $followups = [now()->subDays(3), now()->subDay(), null, now()->addDays(2), null, now()->addDays(5)];
+
         foreach ($clients as $i => $data) {
-            $client = $user->clients()->create($data);
+            $client = $user->clients()->create([
+                ...$data,
+                'next_followup_at' => $followups[$i] ?? null,
+            ]);
 
             // 2 a 3 atendimentos por cliente, com datas escalonadas
             for ($j = 0; $j <= ($i % 2) + 1; $j++) {

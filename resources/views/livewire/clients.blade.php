@@ -1,5 +1,5 @@
 @php
-    $input = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 sm:text-sm';
+    $input = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 sm:text-sm';
     $badge = ['lead' => 'bg-amber-100 text-amber-800', 'active' => 'bg-green-100 text-green-800', 'inactive' => 'bg-gray-200 text-gray-700'];
 @endphp
 
@@ -12,7 +12,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">Gerencie seus clientes e atendimentos</p>
             </div>
             <button wire:click="create"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+                    class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700">
                 + Novo cliente
             </button>
         </div>
@@ -27,6 +27,10 @@
                 <option value="active">Ativo</option>
                 <option value="inactive">Inativo</option>
             </select>
+            <label class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                <input type="checkbox" wire:model.live="overdueOnly" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-900">
+                Só follow-ups vencidos
+            </label>
         </div>
 
         {{-- Tabela --}}
@@ -37,6 +41,7 @@
                         <th class="px-4 py-3">Cliente</th>
                         <th class="px-4 py-3">Empresa</th>
                         <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Próximo contato</th>
                         <th class="px-4 py-3">Atendimentos</th>
                         <th class="px-4 py-3 text-right">Ações</th>
                     </tr>
@@ -45,7 +50,7 @@
                     @forelse ($clients as $client)
                         <tr class="text-sm text-gray-700 dark:text-gray-300">
                             <td class="px-4 py-3">
-                                <a href="{{ route('clients.show', $client) }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-400">{{ $client->name }}</a>
+                                <a href="{{ route('clients.show', $client) }}" class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">{{ $client->name }}</a>
                                 @if ($client->email)<div class="text-xs text-gray-400">{{ $client->email }}</div>@endif
                             </td>
                             <td class="px-4 py-3">{{ $client->company ?: '—' }}</td>
@@ -54,16 +59,26 @@
                                     {{ \App\Models\Client::STATUS_LABELS[$client->status] }}
                                 </span>
                             </td>
+                            <td class="px-4 py-3">
+                                @if ($client->next_followup_at)
+                                    <span class="@if ($client->isFollowupOverdue()) font-medium text-red-600 dark:text-red-400 @else text-gray-600 dark:text-gray-400 @endif">
+                                        {{ $client->next_followup_at->format('d/m/Y') }}
+                                        @if ($client->isFollowupOverdue()) · vencido @endif
+                                    </span>
+                                @else
+                                    <span class="text-gray-300 dark:text-gray-600">—</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-3">{{ $client->interactions_count }}</td>
                             <td class="px-4 py-3 text-right">
-                                <a href="{{ route('clients.show', $client) }}" class="text-gray-500 hover:text-indigo-600">Ver</a>
-                                <button wire:click="edit({{ $client->id }})" class="ml-3 text-gray-500 hover:text-indigo-600">Editar</button>
+                                <a href="{{ route('clients.show', $client) }}" class="text-gray-500 hover:text-emerald-600">Ver</a>
+                                <button wire:click="edit({{ $client->id }})" class="ml-3 text-gray-500 hover:text-emerald-600">Editar</button>
                                 <button wire:click="delete({{ $client->id }})" wire:confirm="Remover este cliente?" class="ml-3 text-gray-500 hover:text-red-600">Excluir</button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
                                 Nenhum cliente encontrado. Clique em <span class="font-semibold">+ Novo cliente</span> para começar.
                             </td>
                         </tr>
@@ -114,6 +129,11 @@
                         </div>
                     </div>
                     <div>
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Próximo follow-up</label>
+                        <input type="datetime-local" wire:model="next_followup_at" class="{{ $input }}">
+                        @error('next_followup_at') <span class="text-xs text-red-600">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Anotações</label>
                         <textarea wire:model="notes" rows="3" class="{{ $input }}"></textarea>
                     </div>
@@ -121,7 +141,7 @@
                         <button type="button" wire:click="$set('showForm', false)"
                                 class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Cancelar</button>
                         <button type="submit"
-                                class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Salvar</button>
+                                class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Salvar</button>
                     </div>
                 </form>
             </div>
