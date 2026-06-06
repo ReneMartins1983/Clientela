@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -20,37 +19,49 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        $clients = [
-            ['name' => 'Marina Costa', 'company' => 'Padaria Pão Quente', 'status' => 'active', 'email' => 'marina@paoquente.com', 'phone' => '(51) 99888-1010'],
-            ['name' => 'Eduardo Lima', 'company' => 'Auto Peças Lima', 'status' => 'active', 'email' => 'eduardo@apl.com', 'phone' => '(51) 99777-2020'],
-            ['name' => 'Patrícia Gomes', 'company' => 'Studio Pilates', 'status' => 'lead', 'email' => 'patricia@studio.com', 'phone' => '(51) 99666-3030'],
-            ['name' => 'Rodrigo Alves', 'company' => 'Mercado Central', 'status' => 'lead', 'email' => 'rodrigo@mercado.com', 'phone' => '(51) 99555-4040'],
-            ['name' => 'Carla Mendes', 'company' => 'Salão Beleza Pura', 'status' => 'inactive', 'email' => 'carla@belezapura.com', 'phone' => '(51) 99444-5050'],
-            ['name' => 'Fernando Rocha', 'company' => 'Construtora Rocha', 'status' => 'active', 'email' => 'fernando@rocha.com', 'phone' => '(51) 99333-6060'],
+        $notes = [
+            'call' => ['Primeiro contato, apresentei a empresa.', 'Liguei para retomar a negociação.', 'Cliente pediu para retornar a ligação.'],
+            'email' => ['Enviei o orçamento por e-mail.', 'Follow-up: aguardando retorno da proposta.', 'Mandei o contrato para assinatura.'],
+            'meeting' => ['Reunião de alinhamento de escopo.', 'Apresentação da proposta presencial.', 'Reunião de fechamento.'],
+            'whatsapp' => ['Tirei dúvidas pelo WhatsApp.', 'Enviei catálogo pelo WhatsApp.', 'Cliente confirmou interesse por mensagem.'],
+            'note' => ['Indicação de outro cliente.', 'Prefere atendimento pela manhã.', 'Orçamento aprovado internamente.'],
+        ];
+        $types = array_keys($notes);
+
+        // [nome, empresa, status, follow-up (dias; neg=vencido, null=sem), nº atendimentos]
+        $fleet = [
+            ['Beatriz Carvalho', 'Floricultura Bela Flor', 'lead', -5, 0],
+            ['Gustavo Henrique', 'Oficina do Gustavo', 'lead', -2, 1],
+            ['Larissa Moreira', 'Ateliê Larissa', 'lead', -1, 1],
+            ['Tiago Fontes', 'Fontes Contabilidade', 'lead', null, 0],
+            ['Sandra Aparecida', 'Doces da Sandra', 'lead', 2, 2],
+            ['Marcelo Pires', 'Pires Transportes', 'lead', 6, 3],
+            ['Renata Bittencourt', 'Clínica Sorrir', 'active', 4, 3],
+            ['Cláudia Nunes', 'Mercearia da Cláudia', 'active', 9, 5],
+            ['Felipe Andrade', 'Andrade Materiais', 'active', null, 4],
+            ['Vanessa Lopes', 'Pet Shop AuAu', 'active', 14, 6],
+            ['Ricardo Teixeira', 'Tech Teixeira', 'active', 3, 4],
+            ['Juliana Prado', 'Prado Eventos', 'active', null, 5],
+            ['Paulo Vidal', 'Vidal Calçados', 'inactive', null, 2],
+            ['Mônica Freitas', 'Salão da Mônica', 'inactive', null, 1],
         ];
 
-        $interactions = [
-            ['type' => 'call', 'notes' => 'Primeiro contato, apresentei a proposta.'],
-            ['type' => 'whatsapp', 'notes' => 'Enviei o orçamento pelo WhatsApp.'],
-            ['type' => 'meeting', 'notes' => 'Reunião para alinhar escopo do serviço.'],
-            ['type' => 'email', 'notes' => 'Follow-up: aguardando retorno sobre o contrato.'],
-        ];
-
-        // alguns follow-ups: vencidos e próximos (para o painel)
-        $followups = [now()->subDays(3), now()->subDay(), null, now()->addDays(2), null, now()->addDays(5)];
-
-        foreach ($clients as $i => $data) {
+        foreach ($fleet as $i => [$name, $company, $status, $followup, $count]) {
             $client = $user->clients()->create([
-                ...$data,
-                'next_followup_at' => $followups[$i] ?? null,
+                'name' => $name,
+                'company' => $company,
+                'status' => $status,
+                'email' => str_replace(' ', '.', mb_strtolower($name)).'@exemplo.com',
+                'phone' => '(51) 9'.(7000 + $i * 137).'-'.(1000 + $i * 211),
+                'next_followup_at' => $followup === null ? null : now()->addDays($followup),
             ]);
 
-            // 2 a 3 atendimentos por cliente, com datas escalonadas
-            for ($j = 0; $j <= ($i % 2) + 1; $j++) {
-                $interaction = $interactions[($i + $j) % count($interactions)];
+            for ($j = 0; $j < $count; $j++) {
+                $type = $types[($i + $j) % count($types)];
                 $client->interactions()->create([
-                    ...$interaction,
-                    'happened_at' => now()->subDays($j * 3 + $i),
+                    'type' => $type,
+                    'notes' => $notes[$type][($i + $j) % 3],
+                    'happened_at' => now()->subDays($j * 4 + ($i % 5) + 1),
                 ]);
             }
         }
