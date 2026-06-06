@@ -1,0 +1,76 @@
+name: clientela
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: clientela-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - clientela
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: clientela-nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8003}:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - clientela
+
+  mysql:
+    image: mysql:8.4
+    container_name: clientela-mysql
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_DB_PORT:-33062}:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-clientela}
+      MYSQL_USER: ${DB_USERNAME:-clientela}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD:-secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - clientela
+
+  node:
+    image: node:20-alpine
+    container_name: clientela-node
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - "${VITE_PORT:-5175}:5173"
+    networks:
+      - clientela
+    profiles:
+      - tools
+
+networks:
+  clientela:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
