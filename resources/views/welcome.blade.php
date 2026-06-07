@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Clientela — mini-CRM de clientes e atendimentos</title>
 
+    {{-- Open Graph / prévia em redes sociais --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Clientela">
+    <meta property="og:title" content="Clientela — mini-CRM">
+    <meta property="og:description" content="Gestão de clientes e atendimentos: funil kanban com arrastar-e-soltar, follow-ups com alertas, anexos e painel.">
+    <meta property="og:image" content="{{ url('/og-image.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+
     <script>
         if (localStorage.getItem('theme') === 'dark' ||
             (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
